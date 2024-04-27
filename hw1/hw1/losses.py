@@ -52,7 +52,17 @@ class SVMHingeLoss(ClassifierLoss):
 
         loss = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        s_yi = x_scores[range(x_scores.shape[0]), y]
+        s_yi = s_yi.view(-1, 1)
+
+        M = x_scores - s_yi
+        M += self.delta
+
+        M[range(M.shape[0]), y] = 0
+        
+        M = torch.max(M, torch.tensor(0))
+        loss = torch.sum(M) / x.shape[0] 
+        return loss
         # ========================
 
         # TODO: Save what you need for gradient calculation in self.grad_ctx

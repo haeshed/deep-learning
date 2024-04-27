@@ -22,7 +22,8 @@ class LinearClassifier(object):
         #  Initialize it from a normal dist with zero mean and the given std.
 
         # ====== YOUR CODE: ======
-        size = (n_features + 1, n_classes)
+        # size = (n_features + 1, n_classes)
+        size = (n_features, n_classes)
         self.weights = torch.normal(mean=0, std=weight_std, size=size)
         # ========================
 
