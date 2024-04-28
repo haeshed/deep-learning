@@ -59,15 +59,14 @@ class SVMHingeLoss(ClassifierLoss):
         M += self.delta
 
         M[range(M.shape[0]), y] = 0
-        
+
         M = torch.max(M, torch.tensor(0))
         loss = torch.sum(M) / x.shape[0] 
-        return loss
         # ========================
 
         # TODO: Save what you need for gradient calculation in self.grad_ctx
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        self.grad_ctx = {'M_matrix': M, 'y_predicted': y_predicted, 'x': x}
         # ========================
 
         return loss
@@ -83,9 +82,20 @@ class SVMHingeLoss(ClassifierLoss):
         #  Same notes as above. Hint: Use the matrix M from above, based on
         #  it create a matrix G such that X^T * G is the gradient.
 
+        M_matrix = self.grad_ctx['M_matrix']
+        y_predicted = self.grad_ctx['y_predicted']
+        x = self.grad_ctx['x']
+
         grad = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        G = M_matrix
+        G[G > 0] = 1
+        G[G < 0] = 0
+        G[range(G.shape[0]), y_predicted] = -torch.sum(G, dim=1)
+        grad = torch.mm(x.t(), G) / x.shape[0]
+
+        
+
         # ========================
 
         return grad
