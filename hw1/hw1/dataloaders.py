@@ -19,40 +19,29 @@ class FirstLastSampler(Sampler):
         super().__init__(data_source)
         self.data_source = data_source
 
-    def generate(self):
-        N = len(self.data_source)
-
-        if N % 2 == 0:
-            for i in range(int(N / 2)):
-                yield i
-                yield N - i - 1 
-
-        else: 
-            yield 0
-            for i in range(1, int(N / 2) + 1):
-                yield N - i
-                yield i
-
-
     def __iter__(self) -> Iterator[int]:
-        # TODO:
-        # Implement the logic required for this sampler.
-        # If the length of the data source is N, you should return indices in a
-        # first-last ordering, i.e. [0, N-1, 1, N-2, ...].
-        # ====== YOUR CODE: ======
-        return iter(self.generate())
-        # ========================
+        data_source_len = len(self.data_source)
+
+        for i in range(int(data_source_len/2)):
+            yield i
+            yield data_source_len - i - 1
+
+        if data_source_len % 2 != 0:
+            yield int(data_source_len/2)
 
     def __len__(self):
         return len(self.data_source)
 
 
-def create_train_validation_loaders(dataset: Dataset, validation_ratio, batch_size=100, num_workers=2):
+def create_train_validation_loaders(
+    dataset: Dataset, validation_ratio, batch_size=100, num_workers=2
+):
     """
     Splits a dataset into a train and validation set, returning a
     DataLoader for each.
     :param dataset: The dataset to split.
-    :param validation_ratio: Ratio (in range 0,1) of the validation set size to total dataset size.
+    :param validation_ratio: Ratio (in range 0,1) of the validation set size to
+        total dataset size.
     :param batch_size: Batch size the loaders will return from each set.
     :param num_workers: Number of workers to pass to dataloader init.
     :return: A tuple of train and validation DataLoader instances.
@@ -60,24 +49,20 @@ def create_train_validation_loaders(dataset: Dataset, validation_ratio, batch_si
     if not (0.0 < validation_ratio < 1.0):
         raise ValueError(validation_ratio)
 
-    # TODO:
-    #  Create two DataLoader instances, dl_train and dl_valid.
-    #  They should together represent a train/validation split of the given
-    #  dataset. Make sure that:
-    #  1. Validation set size is validation_ratio * total number of samples.
-    #  2. No sample is in both datasets. You can select samples at random
-    #     from the dataset.
-    #  Hint: you can specify a Sampler class for the `DataLoader` instance
-    #  you create.
-    # ====== YOUR CODE: ======
-    valid_size = int(batch_size * validation_ratio)
-    train_size = batch_size - valid_size
+    total_samples = len(dataset)
 
-    generator = torch.Generator().manual_seed(42)
-    ds_train, ds_valid = torch.utils.data.random_split(dataset, [1.-validation_ratio, validation_ratio], generator=generator)
+    train_size = int(total_samples * (1 - validation_ratio))
 
-    dl_train = torch.utils.data.DataLoader(ds_train, batch_size=batch_size, shuffle=True, num_workers=num_workers)
-    dl_valid = torch.utils.data.DataLoader(ds_valid, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+    torch.manual_seed(42)
+    indices = list(range(total_samples))
 
-    # ========================
+    train_indices = indices[:train_size]
+    valid_indices = indices[train_size:]
+
+    train_sampler = torch.utils.data.sampler.SubsetRandomSampler(train_indices)
+    valid_sampler = torch.utils.data.sampler.SubsetRandomSampler(valid_indices)
+
+    dl_train = torch.utils.data.DataLoader(dataset, batch_size, num_workers=num_workers, sampler=train_sampler)
+    dl_valid = torch.utils.data.DataLoader(dataset, batch_size, num_workers=num_workers, sampler=valid_sampler)
+
     return dl_train, dl_valid
