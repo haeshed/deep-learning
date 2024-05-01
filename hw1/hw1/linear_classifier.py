@@ -145,10 +145,13 @@ class LinearClassifier(object):
         #  The output shape should be (n_classes, C, H, W).
 
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        w_images = self.weights[1:] if has_bias else self.weights
+
+        # img_shape: Shape of each tensor image to create, i.e. (C,H,W)
+        
         # ========================
 
-        return w_images
+        return w_images.reshape((self.n_classes,) + img_shape)
 
 
 def hyperparams():
