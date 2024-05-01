@@ -75,6 +75,7 @@ class LinearClassifier(object):
 
         return acc * 100
 
+        
     def train(
         self,
         dl_train: DataLoader,
@@ -89,7 +90,7 @@ class LinearClassifier(object):
         train_res = Result(accuracy=[], loss=[])
         valid_res = Result(accuracy=[], loss=[])
 
-        print("Training", end="")
+        print("Training")
         for epoch_idx in range(max_epochs):
             total_correct = 0
             average_loss = 0
@@ -106,12 +107,29 @@ class LinearClassifier(object):
             #     using the weight_decay parameter.
 
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            self.single_epoch(dl_train, loss_fn, train_res, learn_rate, weight_decay)
+            self.single_epoch(dl_valid, loss_fn, valid_res, learn_rate, weight_decay)
+            # print("epoch: ", epoch_idx ,"train accuracy: ", train_res.accuracy[-1], " valid accuracy: ", valid_res.accuracy[-1])
             # ========================
-            print(".", end="")
 
-        print("")
         return train_res, valid_res
+
+    def single_epoch(self, data_loader: DataLoader, loss_fn: ClassifierLoss,
+                            result: namedtuple, learn_rate: float, weight_decay: float):
+
+        x, y = next(iter(data_loader))
+        y_pred, class_scores = self.predict(x)
+        loss = loss_fn.loss(x, y, class_scores, y_pred)
+        regularization = 0.5 * weight_decay * torch.sum(self.weights ** 2)
+        loss += regularization
+        accuracy = LinearClassifier.evaluate_accuracy(y, y_pred)
+        gradient = loss_fn.grad() + weight_decay * self.weights
+        self.weights -= learn_rate * gradient
+
+        result.accuracy.append(accuracy)
+        result.loss.append(loss)
+
+        return result
 
     def weights_as_images(self, img_shape, has_bias=True):
         """
@@ -140,7 +158,8 @@ def hyperparams():
     #  Manually tune the hyperparameters to get the training accuracy test
     #  to pass.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    hp = dict(weight_std=0.001, learn_rate=0.1, weight_decay=0.001)
+
     # ========================
 
     return hp
