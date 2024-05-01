@@ -145,10 +145,10 @@ class LinearClassifier(object):
         #  The output shape should be (n_classes, C, H, W).
 
         # ====== YOUR CODE: ======
-        w_images = self.weights[1:] if has_bias else self.weights
-
-        # img_shape: Shape of each tensor image to create, i.e. (C,H,W)
-        
+        if has_bias:
+            w_images = self.weights[1:]
+        else:
+            w_images = self.weights
         # ========================
 
         return w_images.reshape((self.n_classes,) + img_shape)
