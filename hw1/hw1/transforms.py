@@ -1,6 +1,7 @@
 import torch
 
 
+
 class TensorView(object):
     """
     A transform that returns a new view of a tensor.
@@ -9,9 +10,8 @@ class TensorView(object):
     def __init__(self, *view_dims):
         self.view_dims = view_dims
 
-    def __call__(self, tensor: torch.Tensor):
+    def __call__(self, tensor: torch.Tensor):  
         return tensor.view(*self.view_dims)
-
 
 class InvertColors(object):
     """
@@ -24,11 +24,8 @@ class InvertColors(object):
             representing an image.
         :return: The image with inverted colors.
         """
-        # TODO: Invert the colors of the input image.
-        # ====== YOUR CODE: ======
-        x = 1. - x
+        x = 1 - x
         return x
-        # ========================
 
 
 class FlipUpDown(object):
@@ -37,11 +34,8 @@ class FlipUpDown(object):
         :param x: A tensor of shape (C,H,W) representing an image.
         :return: The image, flipped around the horizontal axis.
         """
-        # TODO: Flip the input image so that up is down.
-        # ====== YOUR CODE: ======
-        x = torch.flip(x, [1])
+        x = torch.flip(x, dims=[1])
         return x
-        # ========================
 
 
 class BiasTrick(object):
@@ -61,14 +55,9 @@ class BiasTrick(object):
         """
         assert x.dim() > 0, "Scalars not supported"
 
-        # TODO:
-        #  Add a 1 at the beginning of the given tensor's feature dimension.
-        #  Hint: See torch.cat().
-        # ====== YOUR CODE: ======
-        
         if x.dim() > 1:
             return torch.cat((torch.ones(x.size()[:-1] + (1,), dtype=x.dtype), x), dim=-1)
-        else:
-            return torch.cat((torch.tensor([1], dtype=x.dtype), x), dim=-1)
 
-        # ========================
+        else:
+            return torch.cat((torch.ones((1,), dtype=x.dtype), x), dim=-1)
+
