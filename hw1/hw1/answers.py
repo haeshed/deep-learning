@@ -47,7 +47,7 @@ test set.
 part2_q1 = r"""
 **Your answer:**
 
-The SVM loss function 𝐿(𝑊) as defined above, contains the parameter Δ that represents the margin,<br>
+The SVM loss function 𝐿(𝑊) as defined above, contains the parameter Δ that represents the regularization,<br>
  which is a hyperparameter that controls the loss incurred by violating the margin. 
  The choice of Δ is arbitrary in the sense that any positive number would attain this goal. <br>
  The regularization term affects the difference in scores and not the absolute scores, therefore it affects the scale of weights. <br>
