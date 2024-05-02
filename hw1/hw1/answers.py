@@ -47,16 +47,12 @@ test set.
 part2_q1 = r"""
 **Your answer:**
 
-In the SVM loss function 𝐿(𝑊) as defined above, the parameter Δ represents the margin,
- which is a hyperparameter that controls the trade-off between the margin and the loss incurred by violating the margin. 
- The choice of Δ is arbitrary
-   in the sense that it determines the threshold beyond which the model adds a loss for misclassification.<br>
-    A larger Δ will result in a larger margin, which may lead to a simpler model that generalizes better to unseen data. <br>
-    However, a larger margin may also result in a higher loss for misclassified samples, which may lead to a model that
-    underfits the training data. <br>
-    On the other hand, a smaller Δ will result in a smaller margin, which may lead to a
-    more complex model that overfits the training data. <br> Therefore, the choice of Δ should be made based on the specific
-    dataset and the desired trade-off between model complexity and generalization performance.
+The SVM loss function 𝐿(𝑊) as defined above, contains the parameter Δ that represents the margin,<br>
+ which is a hyperparameter that controls the loss incurred by violating the margin. 
+ The choice of Δ is arbitrary in the sense that any positive number would attain this goal. <br>
+ The regularization term affects the difference in scores and not the absolute scores, therefore it affects the scale of weights. <br>
+As it increases, Δ penalizes large weight magnitudes, and the model is encouraged to have a smaller weights. <br>
+This is because the loss function is minimized when the weights are small, and the model is encouraged to have a simpler decision boundary. <br>
 
 
 """
@@ -88,13 +84,23 @@ Other errors are more difficult to explain, this is due to the complex nature of
 part2_q3 = r"""
 **Your answer:**
 
+We think that the current learning rate is a good choice. <br>
+A learning rate that is too small may result in a slow convergence of the model, as the model parameters are updated
+by a small amount in each iteration. <br>
+On the other hand, a learning rate that is too large may result in the model overshooting the minimum of the loss function
+and diverging. <br>
+The chocen learning rate of 0.1 is a small value, which allows the model to converge to a minimum of the loss function
+without overshooting it. <br>
+A graph with a good learning rate choice should have these attributes: <br>
+At the beginning of training, the loss rapidly decreases as the model starts to learn from the training data.<br>
+After the initial rapid decrease, the loss continues to decrease steadily over subsequent iterations and converge to some low minimum.<br>
+Also, The loss function graph shows a smooth curve with no large fluctuations or spikes. <br>
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+
+
+
+
+
 
 """
 
