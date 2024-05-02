@@ -102,29 +102,19 @@ An equation: $e^{i\pi} -1 = 0$
 """
 
 part3_q2 = r"""
-**Your answer:**
+**1.** This is not a linear regression model, because it results in a non-linear combination of the original features, 
+although it may be a linear combination of the new features.
 
+**2.** Yes. We can create a non-linear function of any feature or combination of features as an additional feature.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+**3.** No, it will not be a hyperplane, rather a non-linear surface. The decision boundary is now defined by a
+non-linear combination of the original features, that can capture non-linear relationships between the features and
+classes.
 """
 
 part3_q3 = r"""
-**Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+**1.** We use ```np.logspace``` instead of ```np.linspace``` to cover a wide range of possible $\lambda$ values from
+$10^{-3}$ to $10^{2}$. We examine both very small and large values for $\lambda$ to best adapt the regularization.
 """
 
 # ==============
