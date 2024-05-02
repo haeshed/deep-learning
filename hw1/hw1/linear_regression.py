@@ -34,9 +34,6 @@ class LinearRegressor(BaseEstimator, RegressorMixin):
         return y_pred
 
     def fit(self, X, y):
-        ########################################################################
-        ########################### NEED TO FIX!!!!! ###########################
-        ########################################################################
         """
         Fit optimal weights to data using closed form solution.
         :param X: A tensor of shape (N,n_features_) where N is the batch size.
@@ -46,8 +43,7 @@ class LinearRegressor(BaseEstimator, RegressorMixin):
 
         w_opt = None
 
-        regularization_matrix = self.reg_lambda * np.eye(X.shape[1]) * X.shape[0]
-        regularization_matrix[0][0] = 0     # do not apply regularization on bias
+        regularization_matrix = self.reg_lambda * np.eye(X.shape[1])
 
         X_transpose = np.transpose(X)
         pinv = np.linalg.inv(np.matmul(X_transpose, X) + regularization_matrix)
@@ -193,9 +189,6 @@ def r2_score(y: np.ndarray, y_pred: np.ndarray):
 def cv_best_hyperparams(
     model: BaseEstimator, X, y, k_folds, degree_range, lambda_range
 ):
-    ########################################################################
-    ########################### NEED TO FIX!!!!! ###########################
-    ########################################################################
     """
     Cross-validate to find best hyperparameters with k-fold CV.
     :param X: Training data.
@@ -207,41 +200,20 @@ def cv_best_hyperparams(
     :return: A dict containing the best model parameters,
         with some of the keys as returned by model.get_params()
     """
-
-    # TODO: Do K-fold cross validation to find the best hyperparameters
-    #  Notes:
-    #  - You can implement it yourself or use the built in sklearn utilities
-    #    (recommended). See the docs for the sklearn.model_selection package
-    #    http://scikit-learn.org/stable/modules/classes.html#module-sklearn.model_selection
-    #  - If your model has more hyperparameters (not just lambda and degree)
-    #    you should add them to the search.
-    #  - Use get_params() on your model to see what hyperparameters is has
-    #    and their names. The parameters dict you return should use the same
-    #    names as keys.
-    #  - You can use MSE or R^2 as a score.
-
-    # ====== YOUR CODE: ======
-    #param_grid = {'linearregressor__reg_lambda': lambda_range, 'bostonfeaturestransformer__degree': degree_range}
-
-    # Get all model hyperparameters
     all_params = model.get_params()
 
-    # Create a parameter grid to search (include lambda and degree)
-    param_grid = {
-        "linearregressor__reg_lambda": lambda_range,
-        "bostonfeaturestransformer__degree": degree_range,
-    }
+    if "linearregressor__reg_lambda" and "bostonfeaturestransformer__degree" in all_params:
+        param_grid = {
+            "linearregressor__reg_lambda": lambda_range,
+            "bostonfeaturestransformer__degree": degree_range,
+        }
 
-    # Add other relevant hyperparameters to param_grid
     for param_name, param in all_params.items():
         if param_name not in param_grid and hasattr(param, "values"):
-            # Only consider hyperparameters with defined search space
             param_grid[param_name] = param.values
 
-    # Use GridSearchCV for k-fold cross-validation
     grid_search = sklearn.model_selection.GridSearchCV(model, param_grid, cv=k_folds, scoring="neg_mean_squared_error")
     grid_search.fit(X, y)
     best_params = grid_search.best_params_
-    # ========================
 
     return best_params
