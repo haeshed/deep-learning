@@ -50,10 +50,7 @@ part2_q1 = r"""
 The SVM loss function 𝐿(𝑊) as defined above, contains the parameter Δ that represents the regularization,<br>
  which is a hyperparameter that controls the loss incurred by violating the margin. 
  The choice of Δ is arbitrary in the sense that any positive number would attain this goal. <br>
- The regularization term affects the difference in scores and not the absolute scores, therefore it affects the scale of weights. <br>
-As it increases, Δ penalizes large weight magnitudes, and the model is encouraged to have a smaller weights. <br>
-This is because the loss function is minimized when the weights are small, and the model is encouraged to have a simpler decision boundary. <br>
-
+ The regularization term affects the difference in scores and not the absolute scores, therefore it affects the scale of weights (the model is encouraged to have a smaller weights) <br> and not the hyperplane itself. <br>
 
 """
 
@@ -89,12 +86,14 @@ A learning rate that is too small may result in a slow convergence of the model,
 by a small amount in each iteration. <br>
 On the other hand, a learning rate that is too large may result in the model overshooting the minimum of the loss function
 and diverging. <br>
-The chocen learning rate of 0.1 is a small value, which allows the model to converge to a minimum of the loss function
-without overshooting it. <br>
+The chocen learning rate of 0.02 is a small value, which allows the model to converge to a minimum of the loss function
+without overshooting it. <br> <br>
 A graph with a good learning rate choice should have these attributes: <br>
 At the beginning of training, the loss rapidly decreases as the model starts to learn from the training data.<br>
 After the initial rapid decrease, the loss continues to decrease steadily over subsequent iterations and converge to some low minimum.<br>
 Also, The loss function graph shows a smooth curve with no large fluctuations or spikes. <br>
+Also, the accuracy graph should show a steady increase over the training iterations. <br>
+Our solution attains all these attributes, therefore we believe it is a well solution. <br> 
 
 
 
@@ -123,29 +122,19 @@ An equation: $e^{i\pi} -1 = 0$
 """
 
 part3_q2 = r"""
-**Your answer:**
+**1.** This is not a linear regression model, because it results in a non-linear combination of the original features, 
+although it may be a linear combination of the new features.
 
+**2.** Yes. We can create a non-linear function of any feature or combination of features as an additional feature.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+**3.** No, it will not be a hyperplane, rather a non-linear surface. The decision boundary is now defined by a
+non-linear combination of the original features, that can capture non-linear relationships between the features and
+classes.
 """
 
 part3_q3 = r"""
-**Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+**1.** We use ```np.logspace``` instead of ```np.linspace``` to cover a wide range of possible $\lambda$ values from
+$10^{-3}$ to $10^{2}$. We examine both very small and large values for $\lambda$ to best adapt the regularization.
 """
 
 # ==============
