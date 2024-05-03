@@ -154,14 +154,13 @@ class LinearClassifier(object):
         return w_images.reshape((self.n_classes,) + img_shape)
 
 
-def hyperparams():
-    hp = dict(weight_std=0.0, learn_rate=0.0, weight_decay=0.0)
+def hyperparams(weight_std=0.002, learn_rate=0.02, weight_decay=0.002):
 
     # TODO:
     #  Manually tune the hyperparameters to get the training accuracy test
     #  to pass.
     # ====== YOUR CODE: ======
-    hp = dict(weight_std=0.001, learn_rate=0.1, weight_decay=0.001)
+    hp = dict(weight_std=weight_std, learn_rate=learn_rate, weight_decay=weight_decay)
 
     # ========================
 
