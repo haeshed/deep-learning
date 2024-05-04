@@ -109,16 +109,12 @@ Our solution attains all these attributes, therefore we believe it is a well sol
 # Part 3 answers
 
 part3_q1 = r"""
-**Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+The ideal pattern for a residual plot should be a random scattering of the points along the x-axis. This plot shows the 
+differences between the real labels and the labels predicted by our model, so we dont want to see any patterns of error 
+(otherwise, we should improve the model accordingly). If the distribution is non-linear, it may imply that there's a 
+non-linear connection between the features and the value and linear regression model would not be a good fit.
+Moreover, outliers in the plot may harm the model's accuracy and might need to be removed.
+The fitness of the trained model improved, as the points are more randomly distributed across the x-axis.
 """
 
 part3_q2 = r"""
@@ -135,6 +131,10 @@ classes.
 part3_q3 = r"""
 **1.** We use ```np.logspace``` instead of ```np.linspace``` to cover a wide range of possible $\lambda$ values from
 $10^{-3}$ to $10^{2}$. We examine both very small and large values for $\lambda$ to best adapt the regularization.
+
+**2.** The model was trained with a 3-fold cross-validation, so the model is trained and evaluated 3 times, each time
+using a different fold for validation. We repeat this process for each combination of degree and lambda, so without
+considering the final fit on the entire training set, the model was fitted $3\cdot 3\cdot 20 = 180$ times.
 """
 
 # ==============
