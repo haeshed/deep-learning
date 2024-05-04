@@ -45,42 +45,36 @@ test set.
 # Part 2 answers
 
 part2_q1 = r"""
-**Your answer:**
-
 The SVM loss function 𝐿(𝑊) as defined above, contains the parameter Δ that represents the regularization,<br>
  which is a hyperparameter that controls the loss incurred by violating the margin. 
  The choice of Δ is arbitrary in the sense that any positive number would attain this goal. <br>
- The regularization term affects the difference in scores and not the absolute scores, therefore it affects the scale of weights (the model is encouraged to have a smaller weights) <br> and not the hyperplane itself. <br>
-
+ The regularization term affects the difference in scores and not the absolute scores, therefore it affects the scale of weights
+ (the model is encouraged to have a smaller weights) <br> and not the hyperplane itself. <br>
 """
 
 part2_q2 = r"""
-**Your answer:**
-
 In a linear model for classification, such as the SVM model, 
 the model learns a linear decision boundary using a set of weights over the given data. <br> 
 I our case of handwritten digits, the computer receives pixel intensity values matrices (28x28 = 784), 
 and needs to learn some relevant features from it. <br>
 The model may learn patterns associated with different digits based on their pixel intensity distributions and patterns. <br><br>
 The MNIST database should allow our model to learn that a digit 1 correspondes to a straight line, while the digit 8
-corresponds to 2 circles in a vertical orientation. <br>This is very shallow learning, as it does not account for translation, line thickness etc.
-(these could be better learned using a CNN for example). <br>This also means that if the database does not contain uniformally distributed (or close)
-for  changes in the handwriting style, then the model could learn (for example)<br> that thick lines correspondes to a 7, 
+corresponds to 2 circles in a vertical orientation. <br>This is very shallow learning, as it does not account for translation,
+line thickness etc. (these could be better learned using a CNN for example). <br>
+This also means that if the database does not contain uniformally distributed (or close)
+for changes in the handwriting style, then the model could learn (for example)<br> that thick lines correspondes to a 7, 
 which is obviously not something we want to acheive. <br><br>
 According to the visualization section of our notebook, we can observe what are the feature weights for each digit.<br>
-In our human eyes, these does not mean much, but we can try to infer, for example that  0 is closest to 9 (maybe because of the circle they share?) <br>
+In our human eyes, these does not mean much, but we can try to infer, for example that 0 is closest to 9
+(maybe because of the circle they share?) <br>
 and that 3 is quite close to 5 (maybe because they both have a half circular leg and some top?). <br><br>
 We can observe the errors of classification and see that in some cases, they are quite understandable. <br>
 For example. if the handwritten 9 digit is not closed at the top of the circle, it surly resembles a 4. <br>
 Or, if a 6 is written with a down extension of the circle, it resembles a 4. <br>
 Other errors are more difficult to explain, this is due to the complex nature of the weights and the method.
-
-
 """
 
 part2_q3 = r"""
-**Your answer:**
-
 We think that the current learning rate is a good choice. <br>
 A learning rate that is too small may result in a slow convergence of the model, as the model parameters are updated
 by a small amount in each iteration. <br>
@@ -90,17 +84,11 @@ The chocen learning rate of 0.02 is a small value, which allows the model to con
 without overshooting it. <br> <br>
 A graph with a good learning rate choice should have these attributes: <br>
 At the beginning of training, the loss rapidly decreases as the model starts to learn from the training data.<br>
-After the initial rapid decrease, the loss continues to decrease steadily over subsequent iterations and converge to some low minimum.<br>
+After the initial rapid decrease, the loss continues to decrease steadily over subsequent iterations and converge to some
+low minimum.<br>
 Also, The loss function graph shows a smooth curve with no large fluctuations or spikes. <br>
 Also, the accuracy graph should show a steady increase over the training iterations. <br>
 Our solution attains all these attributes, therefore we believe it is a well solution. <br> 
-
-
-
-
-
-
-
 """
 
 # ==============
@@ -118,8 +106,8 @@ The fitness of the trained model improved, as the points are more randomly distr
 """
 
 part3_q2 = r"""
-**1.** This is not a linear regression model, because it results in a non-linear combination of the original features, 
-although it may be a linear combination of the new features.
+**1.** This is not a linear regression model, rather a polynomial regression model, because it results in a non-linear
+combination of the original features (although it may be a linear combination of the new features).
 
 **2.** Yes. We can create a non-linear function of any feature or combination of features as an additional feature.
 
