@@ -17,15 +17,8 @@ class LinearClassifier(object):
         self.n_features = n_features
         self.n_classes = n_classes
 
-        # TODO:
-        #  Create weights tensor of appropriate dimensions
-        #  Initialize it from a normal dist with zero mean and the given std.
-
-        # ====== YOUR CODE: ======
-        # size = (n_features + 1, n_classes)
         size = (n_features, n_classes)
         self.weights = torch.normal(mean=0, std=weight_std, size=size)
-        # ========================
 
     def predict(self, x: Tensor):
         """
@@ -38,17 +31,10 @@ class LinearClassifier(object):
             class_scores: Tensor of shape (N,n_classes) with the class score
                 per sample.
         """
-
-        # TODO:
-        #  Implement linear prediction.
-        #  Calculate the score for each class using the weights and
-        #  return the class y_pred with the highest score.
-
         y_pred, class_scores = None, None
-        # ====== YOUR CODE: ======
+        
         class_scores = torch.matmul(x, self.weights)
         y_pred = torch.argmax(class_scores, dim=1)
-        # ========================
 
         return y_pred, class_scores
 
@@ -61,17 +47,11 @@ class LinearClassifier(object):
         :param y_pred: A tensor of shape (N,) containing predicted labels.
         :return: The accuracy in percent.
         """
-
-        # TODO:
-        #  calculate accuracy of prediction.
-        #  Do not use an explicit loop.
-
         acc = None
-        # ====== YOUR CODE: ======
-        pred = y-y_pred
-        count = len(torch.where(pred==0)[0])
+
+        pred = y - y_pred
+        count = len(torch.where(pred == 0)[0])
         acc = count / len(y)
-        # ========================
 
         return acc * 100
 
@@ -95,22 +75,8 @@ class LinearClassifier(object):
             total_correct = 0
             average_loss = 0
 
-            # TODO:
-            #  Implement model training loop.
-            #  1. At each epoch, evaluate the model on the entire training set
-            #     (batch by batch) and update the weights.
-            #  2. Each epoch, also evaluate on the validation set.
-            #  3. Accumulate average loss and total accuracy for both sets.
-            #     The train/valid_res variables should hold the average loss
-            #     and accuracy per epoch.
-            #  4. Don't forget to add a regularization term to the loss,
-            #     using the weight_decay parameter.
-
-            # ====== YOUR CODE: ======
             self.single_epoch(dl_train, loss_fn, train_res, learn_rate, weight_decay)
             self.single_epoch(dl_valid, loss_fn, valid_res, learn_rate, weight_decay)
-            # print("epoch: ", epoch_idx ,"train accuracy: ", train_res.accuracy[-1], " valid accuracy: ", valid_res.accuracy[-1])
-            # ========================
 
         return train_res, valid_res
 
@@ -139,29 +105,16 @@ class LinearClassifier(object):
             (assumed to be the first feature).
         :return: Tensor of shape (n_classes, C, H, W).
         """
-
-        # TODO:
-        #  Convert the weights matrix into a tensor of images.
-        #  The output shape should be (n_classes, C, H, W).
-
-        # ====== YOUR CODE: ======
         if has_bias:
             w_images = self.weights[1:]
         else:
             w_images = self.weights
-        # ========================
 
         return w_images.reshape((self.n_classes,) + img_shape)
 
 
 def hyperparams(weight_std=0.002, learn_rate=0.02, weight_decay=0.002):
-
-    # TODO:
-    #  Manually tune the hyperparameters to get the training accuracy test
-    #  to pass.
-    # ====== YOUR CODE: ======
+    
     hp = dict(weight_std=weight_std, learn_rate=learn_rate, weight_decay=weight_decay)
-
-    # ========================
 
     return hp
