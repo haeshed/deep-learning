@@ -5,8 +5,8 @@ Note: Inside the answer strings you can use Markdown format and also LaTeX
 math (delimited with $$).
 """
 
-student_name_1 = '' # string
-student_ID_1 = '' # string
+student_name_1 = 'Hadar Eshed' # string
+student_ID_1 = '205947856' # string
 student_name_2 = '' # string
 student_ID_2 = '' # string
 
@@ -155,7 +155,11 @@ def part3_arch_hp():
     out_activation = "none"  # activation function to apply at the output layer
     # TODO: Tweak the MLP architecture hyperparameters.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    # raise NotImplementedError()
+    n_layers = 4
+    hidden_dims = 32
+    activation = "relu"
+    out_activation = "none"
     # ========================
     return dict(
         n_layers=n_layers,
@@ -177,7 +181,12 @@ def part3_optim_hp():
     #    What you returns needs to be a callable, so either an instance of one of the
     #    Loss classes in torch.nn or one of the loss functions from torch.nn.functional.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    # raise NotImplementedError()
+    loss_fn = torch.nn.CrossEntropyLoss()
+    lr = 0.01
+    weight_decay = 0.0001
+    momentum = 0.9
+
     # ========================
     return dict(lr=lr, weight_decay=weight_decay, momentum=momentum, loss_fn=loss_fn)
 
