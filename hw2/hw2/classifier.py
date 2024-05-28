@@ -22,7 +22,7 @@ class Classifier(nn.Module, ABC):
 
         # TODO: Add any additional initializations here, if you need them.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+
         # ========================
 
     def forward(self, x: Tensor) -> Tensor:
@@ -34,7 +34,11 @@ class Classifier(nn.Module, ABC):
 
         # TODO: Implement the forward pass, returning raw scores from the wrapped model.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        output = self.model.forward(x)
+        z = output
+        # print(z.shape)
+        # print(z)
+
         # ========================
         assert z.shape[0] == x.shape[0] and z.ndim == 2, "raw scores should be (N, C)"
         return z
@@ -47,7 +51,8 @@ class Classifier(nn.Module, ABC):
         """
         # TODO: Calcualtes class scores for each sample.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        z = self.forward(x)
+        # print("predict_proba, z: ", z)
         # ========================
         return self.predict_proba_scores(z)
 
@@ -59,7 +64,9 @@ class Classifier(nn.Module, ABC):
         """
         # TODO: Calculate class probabilities for the input.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        z = torch.softmax(z, dim=1)
+        # print("predict_proba_scores, z: ", z)
+        return z
         # ========================
 
     def classify(self, x: Tensor) -> Tensor:
@@ -96,7 +103,8 @@ class ArgMaxClassifier(Classifier):
         #  Classify each sample to one of C classes based on the highest score.
         #  Output should be a (N,) integer tensor.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        class_labels = torch.argmax(y_proba, dim=1)
+        return class_labels
         # ========================
 
 
@@ -128,7 +136,8 @@ class BinaryClassifier(Classifier):
         #  greater or equal to the threshold.
         #  Output should be a (N,) integer tensor.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        class_labels = (y_proba[:, self.positive_class] >= self.threshold).int()
+        return class_labels
         # ========================
 
 
