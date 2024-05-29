@@ -15,6 +15,8 @@ from .cnn import CNN, ResNet
 from .mlp import MLP
 from .training import ClassifierTrainer
 from .classifier import ArgMaxClassifier, BinaryClassifier, select_roc_thresh
+from hw2.answers import part3_arch_hp, part3_optim_hp
+
 
 DATA_DIR = os.path.expanduser("~/.pytorch-datasets")
 
@@ -45,7 +47,27 @@ def mlp_experiment(
     #  Note: use print_every=0, verbose=False, plot=False where relevant to prevent
     #  output from this function.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+
+    hp_optim = part3_optim_hp()
+
+    model = BinaryClassifier(
+        model=MLP(
+            in_dim=2,
+            dims=[*[width]*depth, 2],
+            nonlins=[*['relu']*(depth), 'none']),
+        threshold=0.5,)
+
+    loss_fn = hp_optim.pop('loss_fn')
+    optimizer = torch.optim.SGD(params=model.parameters(), **hp_optim)
+    trainer = ClassifierTrainer(model, loss_fn, optimizer)
+
+    fit_result = trainer.fit(dl_train, dl_valid, num_epochs=n_epochs, print_every=10)
+    # y_hat = model.classify(torch.from_numpy(dl_valid).to(torch.float32)).numpy()
+
+    # valid_acc = fit_result.valid_acc[-1]
+    test_acc = fit_result.test_acc[-1]
+    optimal_thresh = select_roc_thresh(model, *dl_valid.dataset.tensors, plot=True)
+    thresh = optimal_thresh
     # ========================
     return model, thresh, valid_acc, test_acc
 
@@ -200,7 +222,8 @@ def parse_cli():
         default=None,
     )
     sp_exp.add_argument("--lr", type=float, help="Learning rate", default=1e-3)
-    sp_exp.add_argument("--reg", type=float, help="L2 regularization", default=1e-3)
+    sp_exp.add_argument("--reg", type=float,
+                        help="L2 regularization", default=1e-3)
 
     # # Model
     sp_exp.add_argument(
