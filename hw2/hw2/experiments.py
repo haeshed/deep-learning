@@ -26,6 +26,7 @@ MODEL_TYPES = {
     "resnet": ResNet,
 }
 
+
 @staticmethod
 def mlp_experiment(
     depth: int,
@@ -50,35 +51,34 @@ def mlp_experiment(
 
     hp_optim = part3_optim_hp()
     hp_arch = part3_arch_hp()
-    print("depth, width", depth, width)
-    print(hp_optim)
-    print(hp_arch)
+    dims = [width] * depth
+
     model = BinaryClassifier(
         model=MLP(
             in_dim=2,
-            dims=[*[width]*depth, 2],
-            nonlins=[hp_arch['activation']] * max((depth - 1), 1) + [hp_arch['out_activation']])
-            ,threshold=0.5)
+            dims=dims,
+            nonlins=[hp_arch['activation']] * (depth - 1) + [hp_arch['out_activation']]), threshold=0.5)
     print("model", model)
     loss_fn = hp_optim['loss_fn']
-    print("hp_optim", hp_optim)
-    optimizer = torch.optim.SGD(params=model.parameters(), lr=hp_optim['lr'], weight_decay=hp_optim['weight_decay'], momentum=hp_optim['momentum'])
+    # print("hp_optim", hp_optim)
+    optimizer = torch.optim.SGD(params=model.parameters(
+    ), lr=hp_optim['lr'], weight_decay=hp_optim['weight_decay'], momentum=hp_optim['momentum'])
     trainer = ClassifierTrainer(model, loss_fn, optimizer)
 
-    fit_result = trainer.fit(dl_train, dl_valid, num_epochs=n_epochs, print_every=10)
+    fit_result = trainer.fit(
+        dl_train, dl_valid, num_epochs=n_epochs, print_every=0, verbose=False)
     # print("dl_valid.dataset.tensors", dl_valid.dataset.tensors[0])
+    thresh = select_roc_thresh(model, *dl_valid.dataset.tensors, plot=False)
+    model.threshold = thresh
+
     y_hat = model.classify(dl_valid.dataset.tensors[0]).numpy()
     valid_acc = (y_hat == dl_valid.dataset.tensors[1].numpy()).mean()
 
-
     test_acc = fit_result.test_acc[-1]
-    # valid_acc = trainer.test(dl_valid)
 
-    thresh = select_roc_thresh(model, *dl_valid.dataset.tensors, plot=True)
 
     # ========================
     return model, thresh, valid_acc, test_acc
-
 
 
 def cnn_experiment(
