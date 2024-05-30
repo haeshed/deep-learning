@@ -26,7 +26,7 @@ MODEL_TYPES = {
     "resnet": ResNet,
 }
 
-
+@staticmethod
 def mlp_experiment(
     depth: int,
     width: int,
@@ -49,27 +49,36 @@ def mlp_experiment(
     # ====== YOUR CODE: ======
 
     hp_optim = part3_optim_hp()
-
+    hp_arch = part3_arch_hp()
+    print("depth, width", depth, width)
+    print(hp_optim)
+    print(hp_arch)
     model = BinaryClassifier(
         model=MLP(
             in_dim=2,
             dims=[*[width]*depth, 2],
-            nonlins=[*['relu']*(depth), 'none']),
-        threshold=0.5,)
-
-    loss_fn = hp_optim.pop('loss_fn')
-    optimizer = torch.optim.SGD(params=model.parameters(), **hp_optim)
+            nonlins=[hp_arch['activation']] * max((depth - 1), 1) + [hp_arch['out_activation']])
+            ,threshold=0.5)
+    print("model", model)
+    loss_fn = hp_optim['loss_fn']
+    print("hp_optim", hp_optim)
+    optimizer = torch.optim.SGD(params=model.parameters(), lr=hp_optim['lr'], weight_decay=hp_optim['weight_decay'], momentum=hp_optim['momentum'])
     trainer = ClassifierTrainer(model, loss_fn, optimizer)
 
     fit_result = trainer.fit(dl_train, dl_valid, num_epochs=n_epochs, print_every=10)
-    # y_hat = model.classify(torch.from_numpy(dl_valid).to(torch.float32)).numpy()
+    # print("dl_valid.dataset.tensors", dl_valid.dataset.tensors[0])
+    y_hat = model.classify(dl_valid.dataset.tensors[0]).numpy()
+    valid_acc = (y_hat == dl_valid.dataset.tensors[1].numpy()).mean()
 
-    # valid_acc = fit_result.valid_acc[-1]
+
     test_acc = fit_result.test_acc[-1]
-    optimal_thresh = select_roc_thresh(model, *dl_valid.dataset.tensors, plot=True)
-    thresh = optimal_thresh
+    # valid_acc = trainer.test(dl_valid)
+
+    thresh = select_roc_thresh(model, *dl_valid.dataset.tensors, plot=True)
+
     # ========================
     return model, thresh, valid_acc, test_acc
+
 
 
 def cnn_experiment(

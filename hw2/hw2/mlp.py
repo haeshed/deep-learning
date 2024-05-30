@@ -44,6 +44,8 @@ class MLP(nn.Module):
             dict, or instances of nn.Module (e.g. an instance of nn.ReLU()).
             Length should match 'dims'.
         """
+        print(f"MLP: in_dim={in_dim}, dims={dims}, nonlins={nonlins}")
+        print("len(dims):", len(dims), "len(nonlins):", len(nonlins))
         assert len(nonlins) == len(dims)
         self.in_dim = in_dim
         self.out_dim = dims[-1]
@@ -68,7 +70,7 @@ class MLP(nn.Module):
                 assert nonlin in ACTIVATIONS, "unknown activation function:" + nonlin
                 activation_cls = ACTIVATIONS[nonlin]
                 activation_kwargs = ACTIVATION_DEFAULT_KWARGS[nonlin]
-                print(f"Activation {nonlin} - {activation_cls} - {activation_kwargs}")
+                # print(f"Activation {nonlin} - {activation_cls} - {activation_kwargs}")
                 layers.append(activation_cls(**activation_kwargs))
             elif isinstance(nonlin, nn.Module):
                 layers.append(nonlin)
