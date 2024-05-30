@@ -195,12 +195,15 @@ part3_q1 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+High Optimization Error refers to a model failure to fit the training data well. 
+Indicates issues with the training process or model complexity being too low. <br>
+We can observe 93.7% accuracy on the training set, which is a good indication of a low optimization error. <br><br>
+High Generalization Error refers to a model that fits the training data well but fails on new, unseen data. 
+Indicates overfitting or issues with data distribution. <br>
+We can observe 92.4% accuracy on the validation set, which is a good indication of a low generalization error. <br><br>
+High Approximation Error refers to model fundamental inability to capture the underlying data patterns.
+Indicates the need for a more complex model or better features.
+We also know that the datasets are not sampled from the same distribution, which can lead to high approximation error. <br>
 
 """
 

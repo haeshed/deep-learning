@@ -60,22 +60,20 @@ def mlp_experiment(
             nonlins=[hp_arch['activation']] * (depth - 1) + [hp_arch['out_activation']]), threshold=0.5)
     print("model", model)
     loss_fn = hp_optim['loss_fn']
-    # print("hp_optim", hp_optim)
-    optimizer = torch.optim.SGD(params=model.parameters(
-    ), lr=hp_optim['lr'], weight_decay=hp_optim['weight_decay'], momentum=hp_optim['momentum'])
+
+    # optimizer = torch.optim.SGD(params=model.parameters(), lr=hp_optim['lr'], weight_decay=hp_optim['weight_decay'], momentum=hp_optim['momentum'])
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0001)
     trainer = ClassifierTrainer(model, loss_fn, optimizer)
 
     fit_result = trainer.fit(
         dl_train, dl_valid, num_epochs=n_epochs, print_every=0, verbose=False)
-    # print("dl_valid.dataset.tensors", dl_valid.dataset.tensors[0])
+    valid_acc = fit_result.test_acc[-1]
+    
     thresh = select_roc_thresh(model, *dl_valid.dataset.tensors, plot=False)
     model.threshold = thresh
 
     y_hat = model.classify(dl_test.dataset.tensors[0]).numpy()
     test_acc = (y_hat == dl_test.dataset.tensors[1].numpy()).mean()*100
-
-    valid_acc = fit_result.test_acc[-1]
-
 
     # ========================
     return model, thresh, valid_acc, test_acc
