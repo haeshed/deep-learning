@@ -71,10 +71,10 @@ def mlp_experiment(
     thresh = select_roc_thresh(model, *dl_valid.dataset.tensors, plot=False)
     model.threshold = thresh
 
-    y_hat = model.classify(dl_valid.dataset.tensors[0]).numpy()
-    valid_acc = (y_hat == dl_valid.dataset.tensors[1].numpy()).mean()
+    y_hat = model.classify(dl_test.dataset.tensors[0]).numpy()
+    test_acc = (y_hat == dl_test.dataset.tensors[1].numpy()).mean()*100
 
-    test_acc = fit_result.test_acc[-1]
+    valid_acc = fit_result.test_acc[-1]
 
 
     # ========================
