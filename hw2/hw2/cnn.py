@@ -63,7 +63,6 @@ class CNN(nn.Module):
 
         if activation_type not in ACTIVATIONS or pooling_type not in POOLINGS:
             raise ValueError("Unsupported activation or pooling type")
-
         print("CNN: in_size=%s, out_classes=%d, channels=%s, pool_every=%d, hidden_dims=%s" % (
             in_size, out_classes, channels, pool_every, hidden_dims))
         self.feature_extractor = self._make_feature_extractor()
@@ -90,7 +89,7 @@ class CNN(nn.Module):
             layers.append(ACTIVATIONS[self.activation_type](
                 **self.activation_params))
             # print(f"    Activation: {self.activation_type}")
-            if (i + 1) % self.pool_every == 0 and i < len(self.channels) - 1:
+            if (i + 1) % self.pool_every == 0:
                 pool_type = POOLINGS[self.pooling_type]
                 layers.append(pool_type(**self.pooling_params))
                 # print(f"        Pooling: {self.pooling_type}")
@@ -132,12 +131,11 @@ class CNN(nn.Module):
         mlp: MLP = None
         # ====== YOUR CODE: ======
         n_features = self._n_features()
-        mlp = MLP(n_features, self.hidden_dims +
-                  [self.out_classes], [self.activation_type] * (len(self.hidden_dims)) + ['none'])
+        mlp = MLP(n_features, self.hidden_dims +[self.out_classes],
+                   [ACTIVATIONS[self.activation_type](**self.activation_params)] * (len(self.hidden_dims)+1))
         layers = list(mlp.children())[0][:-1]
         mlp.model = nn.Sequential(*layers)
-        print(
-            f"MLP: in_dim={n_features}, out_dim={self.out_classes}, hidden_dims={self.hidden_dims}")
+        print(f"MLP: in_dim={n_features}, out_dim={self.out_classes}, hidden_dims={self.hidden_dims}")
 
         # ========================
         return mlp
@@ -149,8 +147,8 @@ class CNN(nn.Module):
         out: Tensor = None
         # ====== YOUR CODE: ======
         features = self.feature_extractor(x)
-        # features = features.view(features.size(0), -1)
-        features = torch.flatten(features, 1)
+        features = features.view(features.size(0), -1)
+        # features = torch.flatten(features, 1)
         out = self.mlp(features)
 
         # ========================
