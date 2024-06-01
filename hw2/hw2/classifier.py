@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from torch import Tensor, nn
 from typing import Optional
 from sklearn.metrics import roc_curve
+import numpy as np
 
 
 class Classifier(nn.Module, ABC):
@@ -22,7 +23,7 @@ class Classifier(nn.Module, ABC):
 
         # TODO: Add any additional initializations here, if you need them.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+
         # ========================
 
     def forward(self, x: Tensor) -> Tensor:
@@ -34,7 +35,11 @@ class Classifier(nn.Module, ABC):
 
         # TODO: Implement the forward pass, returning raw scores from the wrapped model.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        output = self.model.forward(x)
+        z = output
+        # print(z.shape)
+        # print(z)
+
         # ========================
         assert z.shape[0] == x.shape[0] and z.ndim == 2, "raw scores should be (N, C)"
         return z
@@ -47,7 +52,8 @@ class Classifier(nn.Module, ABC):
         """
         # TODO: Calcualtes class scores for each sample.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        z = self.forward(x)
+        # print("predict_proba, z: ", z)
         # ========================
         return self.predict_proba_scores(z)
 
@@ -59,7 +65,9 @@ class Classifier(nn.Module, ABC):
         """
         # TODO: Calculate class probabilities for the input.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        z = torch.softmax(z, dim=1)
+        # print("predict_proba_scores, z: ", z)
+        return z
         # ========================
 
     def classify(self, x: Tensor) -> Tensor:
@@ -96,7 +104,8 @@ class ArgMaxClassifier(Classifier):
         #  Classify each sample to one of C classes based on the highest score.
         #  Output should be a (N,) integer tensor.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        class_labels = torch.argmax(y_proba, dim=1)
+        return class_labels
         # ========================
 
 
@@ -128,7 +137,8 @@ class BinaryClassifier(Classifier):
         #  greater or equal to the threshold.
         #  Output should be a (N,) integer tensor.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        class_labels = (y_proba[:, self.positive_class] >= self.threshold).int()
+        return class_labels
         # ========================
 
 
@@ -177,7 +187,15 @@ def plot_decision_boundary_2d(
     #  plot a contour map.
     x1_grid, x2_grid, y_hat = None, None, None
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    x1_min, x1_max = x[:, 0].min() - 1, x[:, 0].max() + 1
+    x2_min, x2_max = x[:, 1].min() - 1, x[:, 1].max() + 1
+    x1_range = torch.arange(x1_min, x1_max, dx)
+    x2_range = torch.arange(x2_min, x2_max, dx)
+    x1_grid, x2_grid = torch.meshgrid(x1_range, x2_range)
+    x_grid = torch.stack([x1_grid, x2_grid], dim=-1)
+    x_grid = x_grid.reshape(-1, 2)
+    y_hat = classifier.classify(x_grid)
+    y_hat = y_hat.reshape(x1_grid.shape)
     # ========================
 
     # Plot the decision boundary as a filled contour
@@ -211,7 +229,18 @@ def select_roc_thresh(
     fpr, tpr, thresh = None, None, None
     optimal_theresh_idx, optimal_thresh = None, None
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    y_proba = classifier.predict_proba(x)
+    # print(type(y_proba))
+    # print(y_proba.shape)
+    # y_proba_np = [t.detach().numpy() for t in y_proba]
+    # convert y_proba to numpy
+    y_proba_np = y_proba.detach().numpy() 
+
+    fpr, tpr, thresh = roc_curve(y, y_proba_np[:, 1])
+    optimal_thresh_idx = np.argmax(tpr - fpr)
+    optimal_thresh = thresh[optimal_thresh_idx]
+    
+
     # ========================
 
     if plot:

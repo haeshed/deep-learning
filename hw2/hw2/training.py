@@ -73,9 +73,7 @@ class Trainer(abc.ABC):
 
         for epoch in range(num_epochs):
             verbose = False  # pass this to train/test_epoch.
-            if print_every > 0 and (
-                epoch % print_every == 0 or epoch == num_epochs - 1
-            ):
+            if print_every > 0 and (epoch % print_every == 0 or epoch == num_epochs - 1):
                 verbose = True
             self._print(f"--- EPOCH {epoch+1}/{num_epochs} ---", verbose)
 
@@ -83,7 +81,14 @@ class Trainer(abc.ABC):
             #  - Use the train/test_epoch methods.
             #  - Save losses and accuracies in the lists above.
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            # raise NotImplementedError()
+            train_result = self.train_epoch(dl_train, **kw)
+            test_result = self.test_epoch(dl_test, **kw)
+            train_loss.append(sum(train_result.losses) / len(train_result.losses))
+            train_acc.append(train_result.accuracy)
+            test_loss.append(sum(test_result.losses) / len(test_result.losses))
+            test_acc.append(test_result.accuracy)
+            actual_num_epochs += 1
             # ========================
 
             # TODO:
@@ -94,11 +99,18 @@ class Trainer(abc.ABC):
             #    the checkpoints argument.
             if best_acc is None or test_result.accuracy > best_acc:
                 # ====== YOUR CODE: ======
-                raise NotImplementedError()
+                # raise NotImplementedError()
+                best_acc = test_result.accuracy
+                epochs_without_improvement = 0
+                if checkpoints:
+                    self.save_checkpoint(checkpoints)
                 # ========================
             else:
                 # ====== YOUR CODE: ======
-                raise NotImplementedError()
+                # raise NotImplementedError()
+                epochs_without_improvement += 1
+                if early_stopping and epochs_without_improvement >= early_stopping:
+                    break
                 # ========================
 
         return FitResult(actual_num_epochs, train_loss, train_acc, test_loss, test_acc)
@@ -136,14 +148,33 @@ class Trainer(abc.ABC):
     def train_batch(self, batch) -> BatchResult:
         """
         Runs a single batch forward through the model, calculates loss,
-        preforms back-propagation and updates weights.
-        :param batch: A single batch of data  from a data loader (might
+        performs back-propagation and updates weights.
+        :param batch: A single batch of data from a data loader (might
             be a tuple of data and labels or anything else depending on
             the underlying dataset.
         :return: A BatchResult containing the value of the loss function and
             the number of correctly classified samples in the batch.
         """
-        raise NotImplementedError()
+        X, y = batch
+        if self.device:
+            X = X.to(self.device)
+            y = y.to(self.device)
+
+        self.optimizer.zero_grad()
+        # Forward pass
+        outputs = self.model(X)
+        # Calculate loss
+        loss = self.loss_fn(outputs, y)
+        # Backward pass
+        loss.backward()
+        # Update parameters
+        self.optimizer.step()
+        # Classify and calculate number of correct predictions
+        _, predicted = torch.max(outputs.data, 1)
+        num_correct = (predicted == y).sum().item()
+
+        return BatchResult(loss.item(), num_correct)
+        
 
     @abc.abstractmethod
     def test_batch(self, batch) -> BatchResult:
@@ -155,7 +186,23 @@ class Trainer(abc.ABC):
         :return: A BatchResult containing the value of the loss function and
             the number of correctly classified samples in the batch.
         """
-        raise NotImplementedError()
+        X, y = batch
+        if self.device:
+            X = X.to(self.device)
+            y = y.to(self.device)
+
+        with torch.no_grad():
+            # Forward pass
+            outputs = self.model(X)
+
+            # Calculate loss
+            loss = self.loss_fn(outputs, y)
+            
+            # Classify and calculate number of correct predictions
+            _, predicted = torch.max(outputs.data, 1)
+            num_correct = (predicted == y).sum().item()
+
+        return BatchResult(loss.item(), num_correct)
 
     @staticmethod
     def _print(message, verbose=True):
@@ -257,7 +304,20 @@ class ClassifierTrainer(Trainer):
         #  - Update parameters
         #  - Classify and calculate number of correct predictions
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        # raise NotImplementedError()
+        self.optimizer.zero_grad()
+        # Forward pass
+        outputs = self.model(X)
+        # Calculate loss
+        batch_loss = self.loss_fn(outputs, y)
+        # Backward pass
+        batch_loss.backward()
+        # Update parameters
+        self.optimizer.step()
+        # Classify and calculate number of correct predictions
+        _, predicted = torch.max(outputs.data, 1)
+        num_correct = (predicted == y).sum().item()
+
         # ========================
 
         return BatchResult(batch_loss, num_correct)
@@ -277,7 +337,15 @@ class ClassifierTrainer(Trainer):
             #  - Forward pass
             #  - Calculate number of correct predictions
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            # raise NotImplementedError()
+            # Forward pass
+            outputs = self.model(X)
+            # Calculate loss
+            batch_loss = self.loss_fn(outputs, y)
+            # Classify and calculate number of correct predictions
+            _, predicted = torch.max(outputs.data, 1)
+            num_correct = (predicted == y).sum().item()
+            
             # ========================
 
         return BatchResult(batch_loss, num_correct)

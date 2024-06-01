@@ -1,4 +1,4 @@
-import torch
+import torch as th
 from torch import Tensor, nn
 from typing import Union, Sequence
 from collections import defaultdict
@@ -44,6 +44,8 @@ class MLP(nn.Module):
             dict, or instances of nn.Module (e.g. an instance of nn.ReLU()).
             Length should match 'dims'.
         """
+        print(f"MLP: in_dim={in_dim}, dims={dims}, nonlins={nonlins}")
+        print("len(dims):", len(dims), "len(nonlins):", len(nonlins))
         assert len(nonlins) == len(dims)
         self.in_dim = in_dim
         self.out_dim = dims[-1]
@@ -55,8 +57,27 @@ class MLP(nn.Module):
         #  - Either instantiate the activations based on their name or use the provided
         #    instances.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+
+        super(MLP, self).__init__()
+        layers = []
+        current_dim = in_dim
+        
+        for dim, nonlin in zip(dims, nonlins):
+            layers.append(nn.Linear(current_dim, dim))
+            current_dim = dim
+            
+            if isinstance(nonlin, str):
+                assert nonlin in ACTIVATIONS, "unknown activation function:" + nonlin
+                activation_cls = ACTIVATIONS[nonlin]
+                activation_kwargs = ACTIVATION_DEFAULT_KWARGS[nonlin]
+                # print(f"Activation {nonlin} - {activation_cls} - {activation_kwargs}")
+                layers.append(activation_cls(**activation_kwargs))
+            elif isinstance(nonlin, nn.Module):
+                layers.append(nonlin)
+            else:
+                raise ValueError("non-linearities must be either string keys in ACTIVATIONS or instances of nn.Module")
+
+        self.layers = nn.ModuleList(layers)
 
     def forward(self, x: Tensor) -> Tensor:
         """
@@ -66,5 +87,9 @@ class MLP(nn.Module):
         # TODO: Implement the model's forward pass. Make sure the input and output
         #  shapes are as expected.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+
+        for layer in self.layers:
+            layer = layer if isinstance(layer, nn.Module) else layer()
+            x = layer(x)
+        return x
         # ========================

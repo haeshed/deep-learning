@@ -15,6 +15,8 @@ from .cnn import CNN, ResNet
 from .mlp import MLP
 from .training import ClassifierTrainer
 from .classifier import ArgMaxClassifier, BinaryClassifier, select_roc_thresh
+from hw2.answers import part3_arch_hp, part3_optim_hp
+
 
 DATA_DIR = os.path.expanduser("~/.pytorch-datasets")
 
@@ -25,6 +27,7 @@ MODEL_TYPES = {
 }
 
 
+@staticmethod
 def mlp_experiment(
     depth: int,
     width: int,
@@ -45,7 +48,33 @@ def mlp_experiment(
     #  Note: use print_every=0, verbose=False, plot=False where relevant to prevent
     #  output from this function.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+
+    hp_optim = part3_optim_hp()
+    hp_arch = part3_arch_hp()
+    dims = [width] * depth
+
+    model = BinaryClassifier(
+        model=MLP(
+            in_dim=2,
+            dims=dims,
+            nonlins=[hp_arch['activation']] * (depth - 1) + [hp_arch['out_activation']]), threshold=0.5)
+    print("model", model)
+    loss_fn = hp_optim['loss_fn']
+
+    # optimizer = torch.optim.SGD(params=model.parameters(), lr=hp_optim['lr'], weight_decay=hp_optim['weight_decay'], momentum=hp_optim['momentum'])
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0001)
+    trainer = ClassifierTrainer(model, loss_fn, optimizer)
+
+    fit_result = trainer.fit(
+        dl_train, dl_valid, num_epochs=n_epochs, print_every=0, verbose=False)
+    valid_acc = fit_result.test_acc[-1]
+    
+    thresh = select_roc_thresh(model, *dl_valid.dataset.tensors, plot=False)
+    model.threshold = thresh
+
+    y_hat = model.classify(dl_test.dataset.tensors[0]).numpy()
+    test_acc = (y_hat == dl_test.dataset.tensors[1].numpy()).mean()*100
+
     # ========================
     return model, thresh, valid_acc, test_acc
 
@@ -200,7 +229,8 @@ def parse_cli():
         default=None,
     )
     sp_exp.add_argument("--lr", type=float, help="Learning rate", default=1e-3)
-    sp_exp.add_argument("--reg", type=float, help="L2 regularization", default=1e-3)
+    sp_exp.add_argument("--reg", type=float,
+                        help="L2 regularization", default=1e-3)
 
     # # Model
     sp_exp.add_argument(
