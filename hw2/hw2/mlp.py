@@ -58,7 +58,7 @@ class MLP(nn.Module):
         #    instances.
         # ====== YOUR CODE: ======
 
-        super(MLP, self).__init__()
+        super().__init__()
         layers = []
         current_dim = in_dim
         
@@ -77,7 +77,7 @@ class MLP(nn.Module):
             else:
                 raise ValueError("non-linearities must be either string keys in ACTIVATIONS or instances of nn.Module")
 
-        self.layers = nn.ModuleList(layers)
+        self.model = nn.Sequential(*layers)
 
     def forward(self, x: Tensor) -> Tensor:
         """
@@ -88,8 +88,6 @@ class MLP(nn.Module):
         #  shapes are as expected.
         # ====== YOUR CODE: ======
 
-        for layer in self.layers:
-            layer = layer if isinstance(layer, nn.Module) else layer()
-            x = layer(x)
-        return x
+        return self.model(x)
+
         # ========================
