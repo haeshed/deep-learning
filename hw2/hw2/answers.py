@@ -197,26 +197,28 @@ part3_q1 = r"""
 
 High Optimization Error refers to a model failure to fit the training data well. 
 Indicates issues with the training process or model complexity being too low. <br>
-We can observe 93.7% accuracy on the training set, which is a good indication of a low optimization error. <br><br>
+We can observe 93.7% accuracy on the training set, which is a good indication of a low optimization error. <br>
+Altough, We have not thorouly tweaked the hyperparameters of the model, so we could potentialy get better results.<br><br>
+
 High Generalization Error refers to a model that fits the training data well but fails on new, unseen data. 
 Indicates overfitting or issues with data distribution. <br>
-We can observe 92.4% accuracy on the validation set, which is a good indication of a low generalization error. <br><br>
-High Approximation Error refers to model fundamental inability to capture the underlying data patterns.
+We can observe 92.4% accuracy on the validation set, which is a good indication of a low generalization error. <br>
+We can also compare the test and validation sets, which exemplify close results, thus we can say the 
+generelization has mostly succeeded.<br><br>
+
+High Approximation Error refers to model fundamental inability to capture the underlying data patterns/distribution.
 Indicates the need for a more complex model or better features.
 We also know that the datasets are not sampled from the same distribution, which can lead to high approximation error. <br>
+Lastly, we can observe the boundry of the model, which is not perfect, but is fairly good, and can be improved by tweaking the hyperparameters.<br><br>
 
 """
 
 part3_q2 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+The noise in the generatad data has no tendency to affect FPR/FNR, as the noise is random and does not have a specific pattern. <br>
+The other difference, is that the rotation given to the data is not random, and has a specific pattern, which can affect the model's performance. <br>
+In our case, we can predict that the rotation will affect more so the
 
 """
 
