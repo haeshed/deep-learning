@@ -53,16 +53,24 @@ def mlp_experiment(
     hp_arch = part3_arch_hp()
     dims = [width] * depth
 
+    # model = BinaryClassifier(
+    #     model=MLP(
+    #         in_dim=2,
+    #         dims=dims,
+    #         nonlins=[hp_arch['activation']] * (depth - 1) + [hp_arch['out_activation']]), threshold=0.5)
     model = BinaryClassifier(
         model=MLP(
             in_dim=2,
             dims=dims,
-            nonlins=[hp_arch['activation']] * (depth - 1) + [hp_arch['out_activation']]), threshold=0.5)
+            nonlins=['tanh'] * (depth - 1) + ['logsoftmax']), threshold=0.5)
     print("model", model)
-    loss_fn = hp_optim['loss_fn']
+    # loss_fn = hp_optim['loss_fn']
+    loss_fn = torch.nn.NLLLoss()
 
     # optimizer = torch.optim.SGD(params=model.parameters(), lr=hp_optim['lr'], weight_decay=hp_optim['weight_decay'], momentum=hp_optim['momentum'])
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0001)
+    # optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0001)
+    optimizer = torch.optim.RMSprop(params=model.parameters())
+
     trainer = ClassifierTrainer(model, loss_fn, optimizer)
 
     fit_result = trainer.fit(
