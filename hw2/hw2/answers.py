@@ -217,8 +217,11 @@ part3_q2 = r"""
 **Your answer:**
 
 The noise in the generatad data has no tendency to affect FPR/FNR, as the noise is random and does not have a specific pattern. <br>
-The other difference, is that the rotation given to the data is not random, and has a specific pattern, which can affect the model's performance. <br>
-In our case, we can predict that the rotation will affect more so the
+The other difference is that the rotation given to the data is not random, and has a specific pattern,<br> which can affect the model's performance. <br>
+
+In our case, we can predict that the rotation will affect mostly the false classification of the 1 class (orange) as 0 class,<br>
+ because of the structure of the data and the type of rotation. <br> Therefore, we can predict that the FNR (falsly classifying the 0 class) will be higher than the FPR. <br>
+
 
 """
 
@@ -226,12 +229,16 @@ part3_q3 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+The Question presented to us is that of minimizing the risk of death while also minimizing financial costs. 
+We have an opportunity to tweak the HP of the model, such that we control the tradeoff between the two risks. <br>
+This really depends on the risks posed from the advanced diagnostics vs the risks posed from not testing at all (and relying on late diagnostic). <br>
+With those considerations in mind, we can choose a threshold that will consider those risks and the costs associated with testing (and potentially costs of death). <br>
+Without knowing the exact costs and risks, we can't give a definitive answer, so for now the optimal threshold will have to suffice. <br><br>
+
+In the case of 1., if we can rely over non-lethal late symptoms (instead of actual testing), then we can shift the threshold to a value which will lower the costs of testing (more false negatives). <br>
+In the case of 2., where high probability of death is associated with late diagnostics, we need shift the threshold to a value which will lower the risk of death (more false positives). <br>
+
+
 
 """
 
