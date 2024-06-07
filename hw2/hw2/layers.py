@@ -79,11 +79,7 @@ class LeakyReLU(Layer):
         dimension, and * is any number of other dimensions.
         :return: LeakyReLU of each sample in x.
         """
-
-        # TODO: Implement the LeakyReLU operation.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        out = torch.maximum(self.alpha * x, x)
 
         self.grad_cache["x"] = x
         return out
@@ -95,10 +91,10 @@ class LeakyReLU(Layer):
         """
         x = self.grad_cache["x"]
 
-        # TODO: Implement gradient w.r.t. the input x
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        dx = torch.zeros_like(x)
+        dx[x > 0] = 1
+        dx[x <= 0] = self.alpha
+        dx *= dout
 
         return dx
 
