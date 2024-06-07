@@ -166,12 +166,10 @@ class TanH(Layer):
         dimension, and * is any number of other dimensions.
         :return: Sigmoid of each sample in x.
         """
-
-        # TODO: Implement the tanh function.
-        #  Save whatever you need into grad_cache.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        exp_x = torch.exp(x)
+        exp_m_x = torch.exp(-x)
+        out = (exp_x - exp_m_x) / (exp_x + exp_m_x)
+        self.grad_cache["x"] = out
 
         return out
 
@@ -180,11 +178,8 @@ class TanH(Layer):
         :param dout: Gradient with respect to layer output, shape (N, *).
         :return: Gradient with respect to layer input, shape (N, *)
         """
-
-        # TODO: Implement gradient w.r.t. the input x
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        x = self.grad_cache["x"]
+        dx = (1 - (x * x)) * dout
 
         return dx
 
