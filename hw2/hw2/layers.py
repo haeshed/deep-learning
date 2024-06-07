@@ -202,12 +202,8 @@ class Linear(Layer):
         self.in_features = in_features
         self.out_features = out_features
 
-        # TODO: Create the weight matrix (self.w) and bias vector (self.b).
-        # Initialize the weights to zero-mean gaussian noise with a standard
-        # deviation of `wstd`. Init bias to zero.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        self.w = torch.rand(out_features, in_features) * wstd
+        self.b = torch.zeros(out_features)
 
         # These will store the gradients
         self.dw = torch.zeros_like(self.w)
@@ -223,11 +219,7 @@ class Linear(Layer):
         dimension, and Din is the number of input features.
         :return: Affine transform of each sample in x.
         """
-
-        # TODO: Compute the affine transform
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        out = torch.matmul(x, torch.transpose(self.w, 0, 1)) + self.b
 
         self.grad_cache["x"] = x
         return out
@@ -239,14 +231,9 @@ class Linear(Layer):
         """
         x = self.grad_cache["x"]
 
-        # TODO: Compute
-        #   - dx, the gradient of the loss with respect to x
-        #   - dw, the gradient of the loss with respect to w
-        #   - db, the gradient of the loss with respect to b
-        #  Note: You should ACCUMULATE gradients in dw and db.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        dx = torch.matmul(dout, self.w)
+        self.dw += torch.matmul(torch.transpose(dout, 0, 1), x)
+        self.db += torch.sum(dout, dim=0)
 
         return dx
 
