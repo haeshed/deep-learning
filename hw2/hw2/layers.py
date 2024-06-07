@@ -270,11 +270,10 @@ class CrossEntropyLoss(Layer):
         xmax, _ = torch.max(x, dim=1, keepdim=True)
         x = x - xmax
 
-        # TODO: Compute the cross entropy loss using the last formula from the
-        #  notebook (i.e. directly using the class scores).
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        log_sum_exp = torch.log(torch.sum(torch.exp(x), dim=1, keepdim=True))
+        x_y = x.gather(1, y.view(-1, 1))
+        loss = -x_y + log_sum_exp
+        loss = loss.mean()
 
         self.grad_cache["x"] = x
         self.grad_cache["y"] = y
@@ -290,10 +289,16 @@ class CrossEntropyLoss(Layer):
         y = self.grad_cache["y"]
         N = x.shape[0]
 
-        # TODO: Calculate the gradient w.r.t. the input x.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        # Calculate the softmax probabilities
+        softmax = torch.exp(x) / torch.exp(x).sum(dim=1, keepdim=True)
+
+        # Create the one-hot encoded labels
+        y_one_hot = torch.zeros_like(x)
+        y_one_hot.scatter_(1, y.view(-1, 1), 1)
+
+        # Calculate the gradient with respect to x
+        dx = (softmax - y_one_hot) / N
+        dx *= dout  # Scale by the upstream gradient
 
         return dx
 
