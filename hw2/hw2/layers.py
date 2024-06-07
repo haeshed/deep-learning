@@ -111,9 +111,7 @@ class ReLU(LeakyReLU):
     """
 
     def __init__(self):
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        super().__init__(alpha=0)
 
     def __repr__(self):
         return "ReLU"
