@@ -132,12 +132,8 @@ class Sigmoid(Layer):
         dimension, and * is any number of other dimensions.
         :return: Sigmoid of each sample in x.
         """
-
-        # TODO: Implement the Sigmoid function.
-        #  Save whatever you need into grad_cache.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        out = 1 / (1 + torch.exp(-x))
+        self.grad_cache["x"] = out
 
         return out
 
@@ -146,11 +142,8 @@ class Sigmoid(Layer):
         :param dout: Gradient with respect to layer output, shape (N, *).
         :return: Gradient with respect to layer input, shape (N, *)
         """
-
-        # TODO: Implement gradient w.r.t. the input x
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        x = self.grad_cache["x"]
+        dx = x * (1 - x) * dout
 
         return dx
 
