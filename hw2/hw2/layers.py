@@ -202,7 +202,7 @@ class Linear(Layer):
         self.in_features = in_features
         self.out_features = out_features
 
-        self.w = torch.rand(out_features, in_features) * wstd
+        self.w = torch.randn(out_features, in_features) * wstd
         self.b = torch.zeros(out_features)
 
         # These will store the gradients
