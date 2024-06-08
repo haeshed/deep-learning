@@ -21,8 +21,8 @@ part1_q1 = r"""
 **1.3.** We don't need to materialize the Jacobian in order to calculate the downstream gradient, because we can use the
          chain rule and compute it with matrix multiplication.\
 \
-**2.1.** Since ${Y}$ has shape $64\times1024$ and ${W}$ has shape $512\times1024$, the shape of the Jacobian tensor is
-         $(64\times1024)\times(512\times1024)$.\
+**2.1.** Since ${Y}$ has shape $64\times512$ and ${W}$ has shape $512\times1024$, the shape of the Jacobian tensor is
+         $(64\times512)\times(512\times1024)$.\
 **2.2.** Yes, it's sparse. Each output element depends only on the weights connecting it to the corresponding input
          features, so it has a block diagonal structure. Each block corresponds to a single output feature and has
          non-zero elements only in the rows corresponding to the input features connected to that output feature.\
