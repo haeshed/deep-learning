@@ -427,10 +427,17 @@ class MLP(Layer):
         """
         layers = []
 
-        # TODO: Build the MLP architecture as described.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        layer_dims = [in_features] + hidden_features + [num_classes]
+
+        for i in range(len(layer_dims) - 1):
+            layers.append(Linear(layer_dims[i], layer_dims[i + 1]))
+            if i != len(layer_dims) - 2:
+                if activation == 'relu':
+                    layers.append(ReLU())
+                elif activation == 'sigmoid':
+                    layers.append(Sigmoid())
+                else:
+                    raise ValueError("Activation function must be either 'relu' or 'sigmoid'")
 
         self.sequence = Sequential(*layers)
 
