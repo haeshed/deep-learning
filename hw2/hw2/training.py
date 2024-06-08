@@ -354,30 +354,44 @@ class ClassifierTrainer(Trainer):
 class LayerTrainer(Trainer):
     def __init__(self, model, loss_fn, optimizer):
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        super().__init__(model)
+        self.model = model
+        self.loss_fn = loss_fn
+        self.optimizer = optimizer
         # ========================
 
     def train_batch(self, batch) -> BatchResult:
         X, y = batch
 
-        # TODO: Train the Layer model on one batch of data.
-        #  - Forward pass
-        #  - Backward pass
-        #  - Optimize params
-        #  - Calculate number of correct predictions (make sure it's an int,
-        #    not a tensor) as num_correct.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        X = X.view(X.shape[0], -1)
+        X.requires_grad = True
+
+        outputs = self.model(X)
+        loss = self.loss_fn(outputs, y)
+        self.optimizer.zero_grad()
+        self.model.backward(self.loss_fn.backward())
+        params = self.optimizer.params
+
+        self.optimizer.step()
+
+        loss = loss.item()
+
+        _, predicted = torch.max(outputs.data, 1)
+        num_correct = (predicted == y).sum().item()
 
         return BatchResult(loss, num_correct)
 
     def test_batch(self, batch) -> BatchResult:
         X, y = batch
 
-        # TODO: Evaluate the Layer model on one batch of data.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        X = X.view(X.shape[0], -1)
+
+        with torch.no_grad():
+            outputs = self.model(X)
+            loss = self.loss_fn(outputs, y)
+
+        loss_value = loss.item()
+        _, predicted = torch.max(outputs.data, 1)
+        num_correct = (predicted == y).sum().item()
 
         return BatchResult(loss, num_correct)

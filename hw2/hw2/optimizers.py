@@ -68,12 +68,9 @@ class VanillaSGD(Optimizer):
             if dp is None:
                 continue
 
-            # TODO: Implement the optimizer step.
-            #  Update the gradient according to regularization and then
-            #  update the parameters tensor.
-            # ====== YOUR CODE: ======
-            raise NotImplementedError()
-            # ========================
+            reg_term = self.reg * p
+            dp += reg_term
+            p -= self.learn_rate * dp
 
 
 class MomentumSGD(Optimizer):
@@ -89,22 +86,23 @@ class MomentumSGD(Optimizer):
         self.reg = reg
         self.momentum = momentum
 
-        # TODO: Add your own initializations as needed.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        self.previous_grad = [torch.zeros_like(p) for p, _ in self.params]
 
     def step(self):
+        i = 0
         for p, dp in self.params:
             if dp is None:
                 continue
 
-            # TODO: Implement the optimizer step.
-            # update the parameters tensor based on the velocity. Don't forget
-            # to include the regularization term.
-            # ====== YOUR CODE: ======
-            raise NotImplementedError()
-            # ========================
+            reg_term = self.reg * p
+            dp += reg_term
+
+            v_t = self.momentum * self.previous_grad[i] - self.learn_rate * dp
+            self.previous_grad[i] = v_t
+            p += v_t
+
+            i += 1
+            dp.zero_()
 
 
 class RMSProp(Optimizer):
@@ -122,20 +120,20 @@ class RMSProp(Optimizer):
         self.decay = decay
         self.eps = eps
 
-        # TODO: Add your own initializations as needed.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        self.previous_grad = [torch.zeros_like(p) for p, _ in self.params]
 
     def step(self):
+        i = 0
         for p, dp in self.params:
             if dp is None:
                 continue
 
-            # TODO: Implement the optimizer step.
-            # Create a per-parameter learning rate based on a decaying moving
-            # average of it's previous gradients. Use it to update the
-            # parameters tensor.
-            # ====== YOUR CODE: ======
-            raise NotImplementedError()
-            # ========================
+            reg_term = self.reg * p
+            dp += reg_term
+
+            r_t = self.decay * self.previous_grad[i] + (1 - self.decay) * torch.pow(dp, 2)
+            self.previous_grad[i] = r_t
+            p -= (self.learn_rate / torch.sqrt(r_t + self.eps)) * dp
+
+            i += 1
+            dp.zero_()
