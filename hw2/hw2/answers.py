@@ -46,10 +46,9 @@ reinforcement learning can be used, but they are sometimes less efficient.
 
 def part2_overfit_hp():
     wstd, lr, reg = 0, 0, 0
-    # TODO: Tweak the hyperparameters until you overfit the small dataset.
-    # ====== YOUR CODE: ======
-    raise NotImplementedError()
-    # ========================
+
+    wstd, lr, reg = 0.1, 0.1, 0
+
     return dict(wstd=wstd, lr=lr, reg=reg)
 
 
@@ -62,11 +61,12 @@ def part2_optim_hp():
         0,
     )
 
-    # TODO: Tweak the hyperparameters to get the best results you can.
-    # You may want to use different learning rates for each optimizer.
-    # ====== YOUR CODE: ======
-    raise NotImplementedError()
-    # ========================
+    wstd = 0.001
+    lr_vanilla = 0.035
+    lr_momentum = 0.005
+    lr_rmsprop = 0.0006
+    reg = 0.001
+
     return dict(
         wstd=wstd,
         lr_vanilla=lr_vanilla,
@@ -81,11 +81,10 @@ def part2_dropout_hp():
         0,
         0,
     )
-    # TODO: Tweak the hyperparameters to get the model to overfit without
-    # dropout.
-    # ====== YOUR CODE: ======
-    raise NotImplementedError()
-    # ========================
+
+    wstd = 0.001
+    lr = 0.003
+
     return dict(wstd=wstd, lr=lr)
 
 
