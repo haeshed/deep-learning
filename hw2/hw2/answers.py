@@ -89,55 +89,54 @@ def part2_dropout_hp():
 
 
 part2_q1 = r"""
-**Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+**1.** Dropout is expected to result in worse accuracy on the training set, but higher accuracy on the test set
+       (compared to a model without dropout).\
+       Indeed, with `dropout=0` we obtained a 100% accuracy on the training set, and only 70% accuracy with
+       `dropout=0.4` and only 20% accuracy with `dropout=0.8`.\
+       The dropout prevents overfit - with `dropout=0` we got an overfit (test set accuracy of 22.5%, with 100% accuracy
+       on the training set), while with `dropout=0.4` the accuracy on the test set was 27.5%.\
+       
+**2.** With high dropout we couldn't obtain a model that fits the data well enough, because of a too-small adaptation to
+       the training data. With `dropout=0.4`, we could generate a model that fits the data well enough, while avoiding
+       overfit.\
+\
+\
 """
 
 part2_q2 = r"""
-**Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+Yes, it is possible for the test loss to increase while the test accuracy also increases.\
+Loss measures how well predicted probabilities match the true labels and is sensitive to prediction confidence, and
+accuracy simply measures the percentage of correct predictions.\
+During training, the model might make more confident predictions. If these predictions are correct, accuracy increases.
+However, if the model becomes overly confident and makes even slight errors, the loss can increase despite improving
+accuracy.\
+For example, with `dropout=0`
 """
 
 part2_q3 = r"""
-**Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+**1.** Gradient descent is an optimization algorithm to minimize the loss function, while back-propagation computes the
+       gradient of the loss function with respect to each weight by the chain rule.\
+**2.** GD uses the entire dataset for each update, resulting in stable but slow convergence.\
+       SGD updates weights using a single sample at a time, leading to faster but noisier convergence.\
+**3.** Each epoch of SGD converges faster. Moreover, SGD brings noise, which can be used to escape local minima during
+       training and reach the global minima. In addition, SGD uses less memory as it saves only one sample at a time,
+       instead of the entire training dataset.\
+**4.1.** Yes. Summing losses from disjoint batches before a backward pass results in a gradient equivalent to GD, as it 
+         is identical to the sum of all gradients mathematically.\
+         In GD, we sum $m$ gradients and divide by $m$. In the suggested approach, we sum $m_j$ gradients for each of
+         the $j$ batches. For each batch we divide by $m_j$, and then we divide the sum by the number of batches $j$.\
+**4.2.** Accumulating gradients and losses over all batches before backpropagation required more memory than available.
 """
 
 part2_q4 = r"""
-**Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+**1.1.** To reduce memory complexity in forward mode AD, we can store only the current value and its derivative during
+         the computation. The memory complexity in this case is $\mathcal{O}(1)$.\
+**1.2.** To reduce memory complexity in backward mode AD, we can store values at certain intervals and recompute
+         intermediate values as needed. The memory complexity in this case is $\mathcal{O}(\sqrt n)$.\
+**2.** Yes. For forward computation we use single storage for current values and derivatives. For backward computation
+       we use single storage for each interval and recomputation.\
+**3.** In deep architectures we can store only intervals of intermediate results and use less recomputing during
+       backpropagation.
 """
 
 # ==============
@@ -152,14 +151,12 @@ def part3_arch_hp():
     hidden_dims = 0  # number of output dimensions for each hidden layer
     activation = "none"  # activation function to apply after each hidden layer
     out_activation = "none"  # activation function to apply at the output layer
-    # TODO: Tweak the MLP architecture hyperparameters.
-    # ====== YOUR CODE: ======
-    # raise NotImplementedError()
+
     n_layers = 4
     hidden_dims = 32
     activation = "relu"
     out_activation = "none"
-    # ========================
+
     return dict(
         n_layers=n_layers,
         hidden_dims=hidden_dims,
@@ -174,26 +171,17 @@ def part3_optim_hp():
 
     loss_fn = None  # One of the torch.nn losses
     lr, weight_decay, momentum = 0, 0, 0  # Arguments for SGD optimizer
-    # TODO:
-    #  - Tweak the Optimizer hyperparameters.
-    #  - Choose the appropriate loss function for your architecture.
-    #    What you returns needs to be a callable, so either an instance of one of the
-    #    Loss classes in torch.nn or one of the loss functions from torch.nn.functional.
-    # ====== YOUR CODE: ======
+
     # raise NotImplementedError()
     loss_fn = torch.nn.CrossEntropyLoss()
     lr = 0.01
     weight_decay = 0.0001
     momentum = 0.9
 
-    # ========================
     return dict(lr=lr, weight_decay=weight_decay, momentum=momentum, loss_fn=loss_fn)
 
 
 part3_q1 = r"""
-**Your answer:**
-
-
 High Optimization Error refers to a model failure to fit the training data well. 
 Indicates issues with the training process or model complexity being too low. <br>
 We can observe 93.7% accuracy on the training set, which is a good indication of a low optimization error. <br><br>
@@ -203,7 +191,6 @@ We can observe 92.4% accuracy on the validation set, which is a good indication 
 High Approximation Error refers to model fundamental inability to capture the underlying data patterns.
 Indicates the need for a more complex model or better features.
 We also know that the datasets are not sampled from the same distribution, which can lead to high approximation error. <br>
-
 """
 
 part3_q2 = r"""
