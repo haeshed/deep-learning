@@ -86,22 +86,22 @@ class MomentumSGD(Optimizer):
         self.reg = reg
         self.momentum = momentum
 
-        # TODO: Add your own initializations as needed.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        self.previous_grad = [torch.zeros_like(p) for p, _ in self.params]
 
     def step(self):
+        i = 0
         for p, dp in self.params:
             if dp is None:
                 continue
 
-            # TODO: Implement the optimizer step.
-            # update the parameters tensor based on the velocity. Don't forget
-            # to include the regularization term.
-            # ====== YOUR CODE: ======
-            raise NotImplementedError()
-            # ========================
+            reg_term = self.reg * p
+            dp += reg_term
+            v_t = self.momentum * self.previous_grad[i] - self.learn_rate * dp
+            self.previous_grad[i] = v_t
+            p += v_t
+
+            i += 1
+            dp.zero_()
 
 
 class RMSProp(Optimizer):
