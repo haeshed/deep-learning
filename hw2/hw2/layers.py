@@ -289,16 +289,13 @@ class CrossEntropyLoss(Layer):
         y = self.grad_cache["y"]
         N = x.shape[0]
 
-        # Calculate the softmax probabilities
         softmax = torch.exp(x) / torch.exp(x).sum(dim=1, keepdim=True)
 
-        # Create the one-hot encoded labels
         y_one_hot = torch.zeros_like(x)
         y_one_hot.scatter_(1, y.view(-1, 1), 1)
 
-        # Calculate the gradient with respect to x
         dx = (softmax - y_one_hot) / N
-        dx *= dout  # Scale by the upstream gradient
+        dx *= dout
 
         return dx
 
