@@ -5,38 +5,38 @@ Note: Inside the answer strings you can use Markdown format and also LaTeX
 math (delimited with $$).
 """
 
-student_name_1 = 'Hadar Eshed' # string
-student_ID_1 = '205947856' # string
-student_name_2 = '' # string
-student_ID_2 = '' # string
+student_name_1 = 'Hadar Eshed'
+student_ID_1 = '205947856'
+student_name_2 = 'Yuval Tomer'
+student_ID_2 = '207163783'
 
 # ==============
 # Part 1 (Backprop) answers
 
 part1_q1 = r"""
-**Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+**1.1.** Since ${X}$ has shape $64\times512$ and ${Y}$ has shape $64\times1024$, the shape of the Jacobian tensor is
+         $(64\times512)\times(64\times1024)$.\
+**1.2.** The Jacobian is not sparse, as each element of the output for the $i$-th sample depends on the elements of ${X}$
+         and ${W}$.\
+**1.3.** We don't need to materialize the Jacobian in order to calculate the downstream gradient, because we can use the
+         chain rule and compute it with matrix multiplication.\
+\
+**2.1.** Since ${Y}$ has shape $64\times1024$ and ${W}$ has shape $512\times1024$, the shape of the Jacobian tensor is
+         $(64\times1024)\times(512\times1024)$.\
+**2.2.** Yes, it's sparse. Each output element depends only on the weights connecting it to the corresponding input
+         features, so it has a block diagonal structure. Each block corresponds to a single output feature and has
+         non-zero elements only in the rows corresponding to the input features connected to that output feature.\
+**2.3.** We don't need to materialize the Jacobian in order to calculate the downstream gradient, because we can use the
+         chain rule to compute $X^T\times\delta Y$.\
+\
+\
 """
 
 part1_q2 = r"""
-**Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+Back-propagation is not required to train neural networks, but it is the a very efficient method for calculating
+gradients and updating weights. An alternative for training neural networks with decent-based optimization could be
+random weight changes. This approach is impractical and inefficient compared to back-propagation. Other methods like
+reinforcement learning can be used, but they are sometimes less efficient.
 """
 
 
