@@ -315,22 +315,24 @@ class Dropout(Layer):
         super().__init__()
         assert 0.0 <= p < 1.0
         self.p = p
+        self.mask = None
 
     def forward(self, x, **kw):
-        # TODO: Implement the dropout forward pass.
-        #  Notice that contrary to previous layers, this layer behaves
-        #  differently a according to the current training_mode (train/test).
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        if self.training_mode:
+            self.mask = (torch.rand_like(x) > self.p).float()
+            out = x * self.mask / (1 - self.p)
+        else:
+            out = x
 
         return out
 
     def backward(self, dout):
-        # TODO: Implement the dropout backward pass.
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        if self.training_mode:
+            if self.mask is None:
+                raise ValueError("Cannot backpropagate without forward pass in training mode.")
+            dx = dout * self.mask / (1 - self.p)
+        else:
+            dx = dout
 
         return dx
 
@@ -427,7 +429,7 @@ class MLP(Layer):
         """
         layers = []
 
-        layer_dims = [in_features] + hidden_features + [num_classes]
+        layer_dims = [in_features] + list(hidden_features) + [num_classes]
 
         for i in range(len(layer_dims) - 1):
             layers.append(Linear(layer_dims[i], layer_dims[i + 1]))
@@ -438,6 +440,9 @@ class MLP(Layer):
                     layers.append(Sigmoid())
                 else:
                     raise ValueError("Activation function must be either 'relu' or 'sigmoid'")
+
+                if dropout > 0:
+                    layers.append(Dropout(dropout))
 
         self.sequence = Sequential(*layers)
 
